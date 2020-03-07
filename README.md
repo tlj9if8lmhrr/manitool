@@ -6,7 +6,8 @@ This tool solves these problems.
 
 Since this tool is written in golang, it generates very small container images.
 You can get the generated container as follows:
-docker pull tlj9if8lmhrr / manitool
+
+docker pull tlj9if8lmhrr/manitool
 
 [How to use]
 
