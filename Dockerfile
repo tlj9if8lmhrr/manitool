@@ -8,4 +8,4 @@ FROM scratch
 COPY --from=golang:1.13 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=golang:1.13 /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /app/manitool /app/
-ENTRYPOINT ["/app/manitool"]
+WORKDIR /app

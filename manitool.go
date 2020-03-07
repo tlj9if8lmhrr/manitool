@@ -9,7 +9,7 @@ import (
     "log"
 )
 
-func readLines(filePath, quoteS, quoteD, stringOld, stringNew string) ([]string, error) {
+func readLines(filePath, quoteS, quoteD, stringOld, stringNew, stringHost, stringAlt string) ([]string, error) {
     filePtr, err := os.Open(filePath)
     if err != nil {
         return nil, fmt.Errorf("failed to open a file for reading: %s", err)
@@ -18,11 +18,13 @@ func readLines(filePath, quoteS, quoteD, stringOld, stringNew string) ([]string,
     
     lineList := []string{}
     scannerPtr := bufio.NewScanner(filePtr)
+    hostname := strings.Replace(os.Getenv("HOSTNAME"), "-", stringAlt, -1)
     for scannerPtr.Scan() {
         line := scannerPtr.Text()
         temp := strings.Replace(line, "'",  quoteS, -1)
         temp  = strings.Replace(temp, "\"", quoteD, -1)
         temp  = strings.Replace(temp, stringOld, stringNew, -1)
+        temp  = strings.Replace(temp, stringHost, hostname, -1)
         temp  = strings.Replace(temp, quoteD, "\"", -1)
         temp  = strings.Replace(temp, quoteS, "'",  -1)
         
@@ -61,7 +63,7 @@ func main() {
     
     switch args[0] {
     case "replace":
-        if len(args) != 6 {
+        if len(args) < 6 {
             log.Fatalf("ERROR: invalid number of parameters for %s: %d", args[0], len(args))
         }
         filePath  := args[1]
@@ -70,7 +72,17 @@ func main() {
         stringOld := args[4]
         stringNew := args[5]
         
-        lineList, err := readLines(filePath, quoteS, quoteD, stringOld, stringNew)
+        stringHost := ""
+        if len(args) >= 7 {
+            stringHost = args[6]
+        }
+        
+        stringAlt := ""
+        if len(args) >= 8 {
+            stringAlt = args[7]
+        }
+        
+        lineList, err := readLines(filePath, quoteS, quoteD, stringOld, stringNew, stringHost, stringAlt)
         if err != nil {
             log.Fatal("ERROR: ", err)
         }
